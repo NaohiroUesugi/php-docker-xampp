@@ -1,0 +1,47 @@
+version: '3'
+services:
+  # PHP + Apache のコンテナ
+  myapp-web:
+    build: .
+    container_name: myapp-web
+    # Dockerfile で作ったイメージを指定
+    image: my-php:7.4-apache
+    # 80 ポートをコンテナの 80 ポートにマッピング
+    # (http://localhost/ などで myapp-web コンテナにアクセス)
+    ports:
+      - "80:80"
+    # ローカルの /path/to/your-dir/html フォルダを
+    # コンテナの /var/www/html にマッピング
+    volumes:
+      - ../html:/var/www/html
+
+  # MariaDB のコンテナ
+  mariadb:
+    container_name: mariadb
+    image: mariadb:10.5.4
+    environment:
+      # ユーザー名やパスワードなどは適宜変更してください
+      MYSQL_DATABASE: LAA1247010-mydb
+      MYSQL_USER: LAA1247010
+      MYSQL_PASSWORD: rimo1025matezz
+      MYSQL_ROOT_PASSWORD: mu7ya9to
+    volumes:
+      - dbsocket:/var/run/mysqld
+
+  # phpMyAdmin のコンテナ
+  myapp-pma:
+    container_name: mariadb
+    image: phpmyadmin/phpmyadmin:latest
+    environment:
+      PMA_HOST: mysql149.phy.lolipop.lan
+      # phpMyAdmin でログインするアカウント
+      # (省略するとログインフォーム表示)
+      PMA_USER: LAA1247010
+      PMA_PASSWORD: rimo1025matezz
+    # 8080 ポートをコンテナの 80 ポートにマッピング
+    # (http://localhost:8080/ などで myapp-pma コンテナにアクセス)
+    ports:
+      - "8080:80"
+
+volumes:
+  dbsocket:
